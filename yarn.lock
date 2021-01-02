@@ -9383,6 +9383,11 @@ react-app-polyfill@^2.0.0:
     regenerator-runtime "^0.13.7"
     whatwg-fetch "^3.4.1"
 
+react-colorful@^4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/react-colorful/-/react-colorful-4.4.4.tgz#38e7c5b7075bbf63d3cce22d8c61a439a58b7561"
+  integrity sha512-01V2/6rr6sa1vaZntWZJXZxnU7ew02NG2rqq0eoVp4d3gFU5Ug9lDzNMbr+8ns0byXsJbBR8LbwQTlAjz6x7Kg==
+
 react-dev-utils@^11.0.1:
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.1.tgz#30106c2055acfd6b047d2dc478a85c356e66fe45"
@@ -9874,6 +9879,21 @@ ret@~0.1.10:
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
   integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
+
+rete-connection-plugin@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/rete-connection-plugin/-/rete-connection-plugin-0.9.0.tgz#3a6df36f55493a5c2ea021ae3147a0f0a6ada6ed"
+  integrity sha512-D+H1yAONBBFYXeMkz0sdpDm76XiqcF2N3FduaqMUqcoThocMaFB2O8TX3nJc76ksuYaLYqo/+OLXTxNa+5HQYQ==
+
+rete-react-render-plugin@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/rete-react-render-plugin/-/rete-react-render-plugin-0.2.1.tgz#71a6d73f18f850b85262563f678b40080a7b0e32"
+  integrity sha512-2ZMXUP0v+EiejHVMqdrOmUwyDBHC2UDOJ/pFkElaZL1Kn/E40JZA5yzdBXi6ajYZI2DCzoW5ZBcA2Ihjtur8MQ==
+
+rete@^1.4.5-rc.1:
+  version "1.4.5-rc.1"
+  resolved "https://registry.yarnpkg.com/rete/-/rete-1.4.5-rc.1.tgz#963581892216264a3fb1dfce5146adf68bd64c7e"
+  integrity sha512-wdAfmi8d22h2/CbrVHnX4enhRZtJn4+5uRSOkl1jxZYSsmjzYZbebawcQuY0xIQRFBL3RSX4Wl4hzo4TAg/fOw==
 
 retry@^0.12.0:
   version "0.12.0"
