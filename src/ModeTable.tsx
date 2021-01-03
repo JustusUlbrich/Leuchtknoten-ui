@@ -4,7 +4,7 @@ class ModeTable extends React.Component
 {
 	componentDidMount()
 	{
-		const url = process.env.REACT_APP_BASE_URL + 'api/modes';
+		const url = process.env.REACT_APP_BASE_URL + '/api/modes';
 		// Simple GET request using fetch
 		fetch(url)
 			.then(response => response.json())

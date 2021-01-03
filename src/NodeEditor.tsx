@@ -7,6 +7,8 @@ import ReactRenderPlugin from "rete-react-render-plugin";
 import ConnectionPlugin from "rete-connection-plugin";
 import DockPlugin from 'rete-dock-plugin';
 
+import { clearTimeout, setTimeout } from 'timers';
+
 import { ComponentInt, ComponentOutput, ComponentRGB } from "./nodes/NodeComponents";
 import { Save } from "react-feather";
 // import AreaPlugin from "rete-area-plugin";
@@ -17,6 +19,8 @@ export class NodeEditor extends React.Component
 	dockRef: React.RefObject<HTMLDivElement>;
 
 	editor!: ReteNodeEditor;
+
+	saveTimeout?: NodeJS.Timeout;
 
 	constructor(props: any)
 	{
@@ -83,6 +87,10 @@ export class NodeEditor extends React.Component
 				console.log("process");
 				await engine.abort();
 				await engine.process(this.editor.toJSON());
+
+				if (this.saveTimeout)
+					clearTimeout(this.saveTimeout);
+				this.saveTimeout = setTimeout(() => this.save(), 500);
 			}
 		);
 
@@ -94,6 +102,16 @@ export class NodeEditor extends React.Component
 	save()
 	{
 		console.log(this.editor.toJSON());
+
+		const url = process.env.REACT_APP_BASE_URL + '/api/node';
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(this.editor.toJSON())
+		};
+		fetch(url, requestOptions)
+			.then(response => console.log(response))
+			// .then(data => this.setState({ postId: data.id }));
 	}
 
 	render()

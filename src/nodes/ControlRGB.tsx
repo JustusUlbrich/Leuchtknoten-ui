@@ -50,7 +50,7 @@ export class ControlRGB extends Rete.Control
 		//@ts-ignore
 		this.component = ControlRGBReact;
 
-		const onChange = (value: RgbColor) => this.putData(key, value);
+		const onChange = (value: RgbColor) => { this.putData(key, value); emitter.trigger("process"); };
 		this.props = { emitter, name: node.name, value: node.data[key], onChange };
 	}
 }
