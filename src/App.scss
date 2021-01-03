@@ -37,6 +37,22 @@
   }
 }
 
+a svg {
+	width: 1em;
+	height: 1em;
+	margin-right: 0.25em;
+	vertical-align: text-bottom;
+}
+
+
+/*
+ * Main
+ */
+
+main {
+	height: calc(100vh - 48px);
+	overflow-y: auto;
+}
 
 /*
  * Sidebar

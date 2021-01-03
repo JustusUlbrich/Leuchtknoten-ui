@@ -16,7 +16,7 @@ export class ComponentInt extends Rete.Component
 	async builder(node: Node)
 	{
 		var out1 = new Rete.Output("num", "Number", numSocket);
-		var ctrl = new ControlInt(this.editor, "num", node.name);
+		var ctrl = new ControlInt(this.editor, "num", node);
 
 		node.addControl(ctrl).addOutput(out1);
 
@@ -39,7 +39,7 @@ export class ComponentRGB extends Rete.Component
 	async builder(node: Node)
 	{
 		var out1 = new Rete.Output("rgb", "RGB", rgbSocket);
-		var ctrl = new ControlRGB(this.editor, "rgb", node.name);
+		var ctrl = new ControlRGB(this.editor, "rgb", node);
 
 		node.addControl(ctrl).addOutput(out1);
 
