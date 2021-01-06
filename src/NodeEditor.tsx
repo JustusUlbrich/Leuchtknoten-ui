@@ -9,7 +9,7 @@ import DockPlugin from 'rete-dock-plugin';
 
 import { clearTimeout, setTimeout } from 'timers';
 
-import { ComponentInt, ComponentOutput, ComponentRGB } from "./nodes/NodeComponents";
+import { ComponentGradient, ComponentInt, ComponentOutput, ComponentRGB } from "./nodes/NodeComponents";
 import { Save } from "react-feather";
 // import AreaPlugin from "rete-area-plugin";
 
@@ -38,7 +38,12 @@ export class NodeEditor extends React.Component
 			|| this.dockRef.current === null)
 			return;
 
-		const components = [new ComponentOutput(), new ComponentInt(), new ComponentRGB()];
+		const components = [
+			new ComponentOutput(),
+			new ComponentInt(),
+			new ComponentRGB(),
+			new ComponentGradient(),
+		];
 
 		this.editor = new Rete.NodeEditor("Wall@0.1.0", this.containerRef.current);
 		this.editor.use(ConnectionPlugin);
@@ -58,33 +63,17 @@ export class NodeEditor extends React.Component
 			engine.register(c);
 		});
 
+		// Add root node
 		const root = await components[0].createNode();
-
-		const n1 = await components[1].createNode({ num: 2 });
-		const n2 = await components[1].createNode({ num: 3 });
-		const rgb = await components[2].createNode({ rgb: { r: 200, g: 123, b: 10 } });
-
 		root.position = [this.containerRef.current.clientWidth - 200, 200];
-
-		n1.position = [80, 200];
-		n2.position = [80, 400];
-
-
 		this.editor.addNode(root);
 
-		this.editor.addNode(n1);
-		this.editor.addNode(n2);
-		this.editor.addNode(rgb);
-
-		// editor.connect(n1.outputs.get("num"), add.inputs.get("num1"));
-		// editor.connect(n2.outputs.get("num"), add.inputs.get("num2"));
-
+		// Handle update events on node network
 		this.editor.on(
 			//@ts-ignore
 			"process nodecreated noderemoved connectioncreated connectionremoved",
 			async () =>
 			{
-				console.log("process");
 				await engine.abort();
 				await engine.process(this.editor.toJSON());
 
@@ -111,7 +100,7 @@ export class NodeEditor extends React.Component
 		};
 		fetch(url, requestOptions)
 			.then(response => console.log(response))
-			// .then(data => this.setState({ postId: data.id }));
+		// .then(data => this.setState({ postId: data.id }));
 	}
 
 	render()
