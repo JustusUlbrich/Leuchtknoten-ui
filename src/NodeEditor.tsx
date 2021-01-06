@@ -9,7 +9,7 @@ import DockPlugin from 'rete-dock-plugin';
 
 import { clearTimeout, setTimeout } from 'timers';
 
-import { ComponentGradient, ComponentInt, ComponentOutput, ComponentRGB } from "./nodes/NodeComponents";
+import { ComponentDivision, ComponentGradient, ComponentInt, ComponentLookup, ComponentOutput, ComponentRGB } from "./nodes/NodeComponents";
 import { Save } from "react-feather";
 // import AreaPlugin from "rete-area-plugin";
 
@@ -41,6 +41,8 @@ export class NodeEditor extends React.Component
 		const components = [
 			new ComponentOutput(),
 			new ComponentInt(),
+			new ComponentDivision(),
+			new ComponentLookup(),
 			new ComponentRGB(),
 			new ComponentGradient(),
 		];

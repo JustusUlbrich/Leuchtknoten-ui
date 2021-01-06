@@ -5,7 +5,6 @@ import { ControlInt } from "./ControlInt";
 import { ControlRGB } from "./ControlRGB";
 
 var numSocket = new Rete.Socket("Number");
-var floatSocket = new Rete.Socket("Float");
 var rgbSocket = new Rete.Socket("RGB");
 
 export class ComponentInt extends Rete.Component
@@ -63,7 +62,7 @@ export class ComponentGradient extends Rete.Component
 
 	async builder(node: Node)
 	{
-		var in1 = new Rete.Input("f", "scale", floatSocket);
+		var in1 = new Rete.Input("x", "scale", numSocket);
 		var out1 = new Rete.Output("rgb", "RGB", rgbSocket);
 		var ctrl = new ControlGradient(this.editor, "gradient", node);
 
@@ -75,6 +74,30 @@ export class ComponentGradient extends Rete.Component
 	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
 	{
 		outputs["rgb"] = node.data.rgb;
+	}
+}
+
+export class ComponentDivision extends Rete.Component
+{
+	constructor()
+	{
+		super("Division");
+	}
+
+	async builder(node: Node)
+	{
+		var in1 = new Rete.Input("x", "Num.", numSocket);
+		var in2 = new Rete.Input("y", "Den.", numSocket);
+		var out1 = new Rete.Output("out", "Z", numSocket);
+
+		node.addInput(in1).addInput(in2).addOutput(out1);
+
+		return;
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		//	outputs["out"] = node.data.Z;
 	}
 }
 
@@ -100,6 +123,7 @@ export class ComponentLookup extends Rete.Component
 		// outputs["rgb"] = node.data.rgb;
 	}
 }
+
 export class ComponentOutput extends Rete.Component
 {
 	constructor()
