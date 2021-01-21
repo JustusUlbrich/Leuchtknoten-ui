@@ -1,7 +1,7 @@
 import React from 'react';
 import Rete, { Node } from "rete";
 
-export class ControlIntReact extends React.Component<any, { value: number }>
+export class ControlFloatReact extends React.Component<any, { value: number }>
 {
 	onChange: (value: number) => void;
 
@@ -28,6 +28,7 @@ export class ControlIntReact extends React.Component<any, { value: number }>
 		return (
 			<input
 				type="number"
+				step="0.01"
 				value={this.state.value} onChange={this.handleChange}
 				ref={ref =>
 				{
@@ -38,7 +39,7 @@ export class ControlIntReact extends React.Component<any, { value: number }>
 	}
 }
 
-export class ControlInt extends Rete.Control
+export class ControlFloat extends Rete.Control
 {
 	props: any;
 
@@ -47,7 +48,7 @@ export class ControlInt extends Rete.Control
 		super(key);
 		(this.data as any).render = 'react';
 		//@ts-ignore
-		this.component = ControlIntReact;
+		this.component = ControlFloatReact;
 
 		const onChange = (value: number) => { this.putData(key, value); emitter.trigger("process"); };
 		this.props = { emitter, name: node.name, value: node.data[key], onChange };

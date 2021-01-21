@@ -4,6 +4,39 @@
 
 	display: flex;
 	flex-direction: column;
+
+	.node { 
+		background: #757575cc;
+		border: 4px solid #474747;
+
+		&.selected {
+			background: #707070;
+			border-color: #a73804;
+		}
+
+		&:hover {
+			background: #707070;
+		}
+
+		.title {
+			background: rgb(67,88,98);
+			font-size: 1.25em;
+			font-family: monospace;
+		}
+
+		.socket {
+
+			&.input {
+				margin-left: -16px;
+				border-radius: 12px 0 0 12px;
+			}
+
+			&.output {
+				margin-right: -16px;
+				border-radius: 0 12px 12px 0;
+			}
+		}
+	}
 }
 
 .dock {
