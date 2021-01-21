@@ -86,8 +86,8 @@ export class ComponentMath extends Rete.Component
 
 	async builder(node: Node)
 	{
-		var in1 = new Rete.Input("in1", "In2", numSocket);
-		var in2 = new Rete.Input("in2", "In1", numSocket);
+		var in1 = new Rete.Input("in1", "In1", numSocket);
+		var in2 = new Rete.Input("in2", "In2", numSocket);
 		var out1 = new Rete.Output("add", "Add", numSocket);
 		var out2 = new Rete.Output("sub", "Sub", numSocket);
 		var out3 = new Rete.Output("mul", "Mul", numSocket);
@@ -139,9 +139,11 @@ export class ComponentTrigo extends Rete.Component
 	async builder(node: Node)
 	{
 		var input = new Rete.Input("in", "In", numSocket);
-		var out = new Rete.Output("out", "Out", numSocket);
+		var sin = new Rete.Output("sin", "Sin", numSocket);
+		var cos = new Rete.Output("cos", "Cos", numSocket);
+		var tan = new Rete.Output("tan", "Tan", numSocket);
 
-		node.addInput(input).addOutput(out);
+		node.addInput(input).addOutput(sin).addOutput(cos).addOutput(tan);
 
 		return;
 	}
