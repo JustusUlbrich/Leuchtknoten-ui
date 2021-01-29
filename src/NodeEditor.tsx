@@ -9,9 +9,9 @@ import DockPlugin from 'rete-dock-plugin';
 
 import { clearTimeout, setTimeout } from 'timers';
 
-import { ComponentMath, ComponentGradient, ComponentInt, ComponentLookup, ComponentOutput, ComponentRGB, ComponentTrigo } from "./nodes/NodeComponents";
+import { ComponentMath, ComponentGradient, ComponentInt, ComponentLookup, ComponentOutput, ComponentRGB, ComponentTrigo, ComponentMix, ComponentMathAdv, ComponentSetHSV } from "./nodes/NodeComponents";
 import { Save } from "react-feather";
-// import AreaPlugin from "rete-area-plugin";
+import AreaPlugin from "rete-area-plugin";
 
 export class NodeEditor extends React.Component
 {
@@ -40,11 +40,14 @@ export class NodeEditor extends React.Component
 
 		const components = [
 			new ComponentOutput(),
+			new ComponentLookup(),
 			new ComponentInt(),
 			new ComponentMath(),
-			new ComponentLookup(),
+			new ComponentMathAdv(),
 			new ComponentTrigo(),
+			new ComponentMix(),
 			new ComponentRGB(),
+			new ComponentSetHSV(),
 			new ComponentGradient(),
 		];
 
@@ -57,6 +60,10 @@ export class NodeEditor extends React.Component
 				container: this.dockRef.current,
 				plugins: [ReactRenderPlugin],
 			});
+
+		const background = document.createElement('div');
+		background.classList.add('background');
+		this.editor.use(AreaPlugin, { background })
 
 		const engine = new Rete.Engine("Wall@0.1.0");
 

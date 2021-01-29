@@ -88,13 +88,92 @@ export class ComponentMath extends Rete.Component
 	{
 		var in1 = new Rete.Input("in1", "In1", numSocket);
 		var in2 = new Rete.Input("in2", "In2", numSocket);
-		var out1 = new Rete.Output("add", "Add", numSocket);
-		var out2 = new Rete.Output("sub", "Sub", numSocket);
-		var out3 = new Rete.Output("mul", "Mul", numSocket);
-		var out4 = new Rete.Output("div", "Div", numSocket);
+		var out1 = new Rete.Output("add", "+", numSocket);
+		var out2 = new Rete.Output("sub", "-", numSocket);
+		var out3 = new Rete.Output("mul", "*", numSocket);
+		var out4 = new Rete.Output("div", "/", numSocket);
 
 		node.addInput(in1).addInput(in2)
 			.addOutput(out1).addOutput(out2).addOutput(out3).addOutput(out4);
+
+		return;
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		//	outputs["out"] = node.data.Z;
+	}
+}
+
+export class ComponentMathAdv extends Rete.Component
+{
+	constructor()
+	{
+		super("MathAdv");
+	}
+
+	async builder(node: Node)
+	{
+		var in1 = new Rete.Input("in1", "In1", numSocket);
+		var in2 = new Rete.Input("in2", "In2", numSocket);
+		var out1 = new Rete.Output("step", "Step", numSocket);
+		var out2 = new Rete.Output("mod", "Modulo", numSocket);
+
+		node.addInput(in1).addInput(in2)
+			.addOutput(out1).addOutput(out2);
+
+		return;
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		//	outputs["out"] = node.data.Z;
+	}
+}
+
+export class ComponentMix extends Rete.Component
+{
+	constructor()
+	{
+		super("Mix");
+	}
+
+	async builder(node: Node)
+	{
+		var c1 = new Rete.Input("c1", "Color1", rgbSocket);
+		var c2 = new Rete.Input("c2", "Color2", rgbSocket);
+		var scale = new Rete.Input("scale", "Scale", numSocket);
+		var out1 = new Rete.Output("mix", "Mix", rgbSocket);
+
+		node.addInput(c1).addInput(c2).addInput(scale)
+			.addOutput(out1);
+
+		return;
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		//	outputs["out"] = node.data.Z;
+	}
+}
+
+export class ComponentSetHSV extends Rete.Component
+{
+	constructor()
+	{
+		super("SetHSV");
+	}
+
+	async builder(node: Node)
+	{
+		var c = new Rete.Input("color", "Color", rgbSocket);
+		var h = new Rete.Input("h", "H", numSocket);
+		var s = new Rete.Input("s", "S", numSocket);
+		var v = new Rete.Input("v", "V", numSocket);
+		var out1 = new Rete.Output("rgb", "RGB", rgbSocket);
+
+		node.addInput(c).addInput(h).addInput(s).addInput(v)
+			.addOutput(out1);
 
 		return;
 	}

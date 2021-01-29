@@ -1,3 +1,19 @@
+$grid-size: 170px;
+$grid-color: #363636;
+$dark-color: darken($grid-color, 10%);
+$th: 0.005;
+
+@function line($dir, $t, $w, $color) {
+	$start: $grid-size * $t - $w * $grid-size;
+	$end: $grid-size * $t + $w * $grid-size;
+	@return linear-gradient(to $dir, transparent $start, $color $start, $color $end, transparent $end);
+}
+
+@function lines($dir) {
+	@return line($dir, 0.5, $th * 2, $grid-color), line($dir, 0.25, $th, $grid-color),
+		line($dir, 0.75, $th, $grid-color), line($dir, 1, $th * 2, $grid-color);
+}
+
 .node-editor {
 	min-height: 400px;
 	height: 100%;
@@ -5,9 +21,21 @@
 	display: flex;
 	flex-direction: column;
 
-	.node { 
-		background: #757575cc;
+	.background {
+		z-index: -5;
+		background-size: $grid-size $grid-size;
+		background-image: line(right, 0.5, $th * 3, $dark-color), line(bottom, 0.5, $th * 3, $dark-color), lines(right),
+			lines(bottom);
+		background-color: darken($grid-color, 6%);
+	}
+
+	.node {
+		background: #75757599;
 		border: 4px solid #474747;
+
+		display: grid;
+		grid-template-columns: repeat(3, auto);
+		grid-auto-flow: row dense;
 
 		&.selected {
 			background: #707070;
@@ -19,13 +47,24 @@
 		}
 
 		.title {
-			background: rgb(67,88,98);
+			background: rgb(67, 88, 98);
 			font-size: 1.25em;
 			font-family: monospace;
+
+			grid-column: 1 / span 3;
+		}
+
+		.output {
+			grid-column: 3;
+		}
+		.control {
+			grid-column: 2;
+		}
+		.input {
+			grid-column: 1;
 		}
 
 		.socket {
-
 			&.input {
 				margin-left: -16px;
 				border-radius: 12px 0 0 12px;
@@ -36,28 +75,82 @@
 				border-radius: 0 12px 12px 0;
 			}
 		}
+
+		// Output Node
+		&.output {
+			.title {
+				background-color: #e74c3c;
+			}
+		}
+
+		// Color / RGB Nodes
+		&.mix,
+		&.rgb,
+		&.sethsv,
+		&.gradient {
+			.title {
+				background-color: #9b59b6;
+			}
+		}
+
+		// Float / Math Nodes
+		&.number,
+		&.trigo,
+		&.math,
+		&.mathadv {
+			.title {
+				background-color: #3498db;
+			}
+		}
+
+		// Utility Nodes
+		&.lookup {
+			.title {
+				background-color: #e67e22;
+			}
+		}
+
+		// Remaining Color for last Category
+		// #1ABC9C
 	}
 }
 
 .dock {
+	&:hover {
+		flex: 0 0 200px;
+	}
+
+	transition: flex 0.2s ease-out;
 	overflow-x: auto;
 	overflow-y: hidden;
 	white-space: nowrap;
-	flex: 0 0 100px;	
+	flex: 0 0 100px;
 	border-top: 1px solid #d3d3d3;
 	padding-top: 1em;
 	display: flex;
 	flex-direction: row;
-	justify-content: space-between
+	justify-content: space-between;
+
+	.dock-item {
+		display: inline-block;
+		vertical-align: top;
+		transform: scale(0.8);
+		transform-origin: 50% 0;
+
+		.node {
+			&.output {
+				display: none;
+			}
+
+			min-width: 7em;
+
+			.control {
+				display: none;
+			}
+		}
+	}
 }
 
-.actions>button {
+.actions > button {
 	margin-right: 0.25em;
-}	
-
-.dock-item {
-	display: inline-block;
-	vertical-align: top;
-	transform: scale(0.8);
-	transform-origin: 50% 0;
 }
