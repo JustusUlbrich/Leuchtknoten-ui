@@ -21,6 +21,18 @@ $th: 0.005;
 	display: flex;
 	flex-direction: column;
 
+	.context-menu {
+		font-family: monospace;
+		padding: 0 !important;
+		box-shadow: 5px 5px 13px 2px #000;
+
+		.item,
+		.search {
+			background-color: #3b3b3b !important;
+			border-color: #151515 !important;
+		}
+	}
+
 	.background {
 		z-index: -5;
 		background-size: $grid-size $grid-size;

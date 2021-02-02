@@ -12,6 +12,14 @@ import { clearTimeout, setTimeout } from 'timers';
 import { ComponentMath, ComponentGradient, ComponentInt, ComponentLookup, ComponentOutput, ComponentRGB, ComponentTrigo, ComponentMix, ComponentMathAdv, ComponentSetHSV } from "./nodes/NodeComponents";
 import { Save } from "react-feather";
 import AreaPlugin from "rete-area-plugin";
+import KeyboardPlugin from 'rete-keyboard-plugin';
+import ContextMenuPlugin from 'rete-context-menu-plugin';
+
+interface NodeUpdate
+{
+	NodeId: string,
+	Data: any;
+}
 
 export class NodeEditor extends React.Component
 {
@@ -21,6 +29,7 @@ export class NodeEditor extends React.Component
 	editor!: ReteNodeEditor;
 
 	saveTimeout?: NodeJS.Timeout;
+	updateTimeout?: NodeJS.Timeout;
 
 	constructor(props: any)
 	{
@@ -60,6 +69,11 @@ export class NodeEditor extends React.Component
 				container: this.dockRef.current,
 				plugins: [ReactRenderPlugin],
 			});
+		this.editor.use(KeyboardPlugin)
+		this.editor.use(ContextMenuPlugin, {
+			searchBar: true,
+			delay: 100,
+		});
 
 		const background = document.createElement('div');
 		background.classList.add('background');
@@ -81,7 +95,7 @@ export class NodeEditor extends React.Component
 		// Handle update events on node network
 		this.editor.on(
 			//@ts-ignore
-			"process nodecreated noderemoved connectioncreated connectionremoved",
+			"nodecreated noderemoved connectioncreated connectionremoved",
 			async () =>
 			{
 				await engine.abort();
@@ -90,6 +104,17 @@ export class NodeEditor extends React.Component
 				if (this.saveTimeout)
 					clearTimeout(this.saveTimeout);
 				this.saveTimeout = setTimeout(() => this.save(), 500);
+			}
+		);
+
+		this.editor.on(
+			//@ts-ignore
+			"process",
+			async (args: any) =>
+			{
+				if (this.updateTimeout)
+					clearTimeout(this.updateTimeout);
+				this.updateTimeout = setTimeout(() => this.update(args as NodeUpdate), 50);
 			}
 		);
 
@@ -109,8 +134,19 @@ export class NodeEditor extends React.Component
 			body: JSON.stringify(this.editor.toJSON())
 		};
 		fetch(url, requestOptions)
-			.then(response => console.log(response))
-		// .then(data => this.setState({ postId: data.id }));
+			.then(response => console.log(response));
+	}
+
+	update(node: NodeUpdate)
+	{
+		const url = process.env.REACT_APP_BASE_URL + '/api/nodeupdate';
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(node)
+		};
+		fetch(url, requestOptions)
+			.then(response => console.log(response));
 	}
 
 	render()

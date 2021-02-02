@@ -76,7 +76,11 @@ export class ControlGradient extends Rete.Control
 		//@ts-ignore
 		this.component = ControlGradientReact;
 
-		const onChange = (value: Palette) => { this.putData(key, value); emitter.trigger("process"); };
+		const onChange = (value: Palette) =>
+		{
+			this.putData(key, value);
+			emitter.trigger("process", { NodeId: node.id, Data: node.data });
+		};
 		this.props = { emitter, name: node.name, value: node.data[key], onChange };
 	}
 }

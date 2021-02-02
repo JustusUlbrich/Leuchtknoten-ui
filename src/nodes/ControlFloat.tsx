@@ -50,7 +50,11 @@ export class ControlFloat extends Rete.Control
 		//@ts-ignore
 		this.component = ControlFloatReact;
 
-		const onChange = (value: number) => { this.putData(key, value); emitter.trigger("process"); };
+		const onChange = (value: number) => 
+		{
+			this.putData(key, value);
+			emitter.trigger("process", { NodeId: node.id, Data: node.data });
+		};
 		this.props = { emitter, name: node.name, value: node.data[key], onChange };
 	}
 }
