@@ -9,7 +9,7 @@ import DockPlugin from 'rete-dock-plugin';
 
 import { clearTimeout, setTimeout } from 'timers';
 
-import { ComponentMath, ComponentGradient, ComponentInt, ComponentLookup, ComponentOutput, ComponentRGB, ComponentTrigo, ComponentMix, ComponentMathAdv, ComponentSetHSV } from "./nodes/NodeComponents";
+import { ComponentMath, ComponentGradient, ComponentInt, ComponentLookup, ComponentOutput, ComponentRGB, ComponentTrigo, ComponentMix, ComponentMathAdv, ComponentSetHSV, ComponentBool, ComponentAnimNumber, ComponentMidi } from "./nodes/NodeComponents";
 import { Save } from "react-feather";
 import AreaPlugin from "rete-area-plugin";
 import KeyboardPlugin from 'rete-keyboard-plugin';
@@ -31,9 +31,12 @@ export class NodeEditor extends React.Component
 	saveTimeout?: NodeJS.Timeout;
 	updateTimeout?: NodeJS.Timeout;
 
+	networkName: string;
+
 	constructor(props: any)
 	{
 		super(props);
+		this.networkName = props.match?.params?.name ?? "";
 
 		this.containerRef = React.createRef();
 		this.dockRef = React.createRef();
@@ -50,6 +53,9 @@ export class NodeEditor extends React.Component
 		const components = [
 			new ComponentOutput(),
 			new ComponentLookup(),
+			new ComponentBool(),
+			new ComponentMidi(),
+			new ComponentAnimNumber(),
 			new ComponentInt(),
 			new ComponentMath(),
 			new ComponentMathAdv(),
@@ -118,9 +124,28 @@ export class NodeEditor extends React.Component
 			}
 		);
 
+		this.editor.on('zoom', ({ source }) =>
+		{
+			return source !== 'dblclick';
+		});
+
 		this.editor.view.resize();
 		this.editor.trigger("process");
 		// AreaPlugin.zoomAt(editor, editor.nodes);
+
+		{
+			const url = process.env.REACT_APP_BASE_URL + '/api/nodeload?name=' + this.networkName;
+			const requestOptions = {
+				method: 'GET',
+				headers: { 'Content-Type': 'application/json' },
+			};
+
+			fetch(url, requestOptions)
+				.then(response => response.json())
+				.then(data => { console.log(data); return data; })
+				.then(data => this.editor.fromJSON(data));
+		}
+
 	}
 
 	save()
@@ -149,6 +174,22 @@ export class NodeEditor extends React.Component
 			.then(response => console.log(response));
 	}
 
+	store()
+	{
+		console.log(this.editor.toJSON());
+
+		this.networkName = window.prompt("Name", this.networkName)?.toLowerCase().replace(" ", "") ?? "";
+
+		const url = process.env.REACT_APP_BASE_URL + '/api/nodestore';
+		const requestOptions = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ name: this.networkName, network: this.editor.toJSON() })
+		};
+		fetch(url, requestOptions)
+			.then(response => console.log(response));
+	}
+
 	render()
 	{
 		return (
@@ -158,7 +199,7 @@ export class NodeEditor extends React.Component
 				<div className="dock">
 					<div ref={this.dockRef}></div>
 					<div className="actions">
-						<button type="button" className="btn btn-sm btn-primary" onClick={() => this.save()}>
+						<button type="button" className="btn btn-sm btn-primary" onClick={() => this.store()}>
 							<Save />
 									Speichern
 						</button>

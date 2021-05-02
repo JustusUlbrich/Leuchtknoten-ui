@@ -109,6 +109,7 @@ $th: 0.005;
 		&.number,
 		&.trigo,
 		&.math,
+		&.animnumber,
 		&.mathadv {
 			.title {
 				background-color: #3498db;
@@ -122,8 +123,26 @@ $th: 0.005;
 			}
 		}
 
-		// Remaining Color for last Category
-		// #1ABC9C
+		// Boolean nodes
+		&.midi,
+		&.bool {
+			.title {
+				background-color: #1abc9c;
+			}
+		}
+
+		// Color for sockets
+		div.socket {
+			&.number {
+				background-color: #3498db;
+			}
+			&.rgb {
+				background-color: #9b59b6;
+			}
+			&.bool {
+				background-color: #1abc9c;
+			}
+		}
 	}
 }
 
@@ -165,4 +184,8 @@ $th: 0.005;
 
 .actions > button {
 	margin-right: 0.25em;
+}
+
+.custom-control-label {
+	color: #fff;
 }

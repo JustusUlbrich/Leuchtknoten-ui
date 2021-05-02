@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import ModeConfig from './ModeConfig';
 import ModeTable from './ModeTable';
@@ -25,39 +26,22 @@ function Nav()
 	)
 }
 
-function PresetList()
+function PresetList(props: { modes: string[] })
 {
 	return (
 		<ul className="nav flex-column mb-2">
-			<li className="nav-item">
-				<a className="nav-link" href="#">
-					<Layers />
-			Rainbow
-			</a>
-			</li>
-			<li className="nav-item">
-				<a className="nav-link" href="#">
-					<Layers />
-			Blink
-			</a>
-			</li>
-			<li className="nav-item">
-				<a className="nav-link" href="#">
-					<Layers />
-			Random
-			</a>
-			</li>
-			<li className="nav-item">
-				<a className="nav-link" href="#">
-					<Layers />
-			Custom1
-			</a>
-			</li>
+			{props.modes.map(m =>
+				<li key={m} className="nav-item">
+					<a className="nav-link" href={"/node/" + m}>
+						<Layers /> {m}
+					</a>
+				</li>
+			)}
 		</ul>
 	);
 }
 
-function Sidebar()
+function Sidebar(props: { modes: string[] })
 {
 	return (
 		<nav id="sidebarMenu" className="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
@@ -84,7 +68,7 @@ function Sidebar()
 						<PlusCircle />
 					</a>
 				</h6>
-				<PresetList />
+				<PresetList modes={props.modes} />
 			</div>
 		</nav>
 	)
@@ -92,18 +76,32 @@ function Sidebar()
 
 function App()
 {
+	const [modes, setModes] = useState<string[]>([]);
+
+	useEffect(() =>
+	{
+		const url = process.env.REACT_APP_BASE_URL + '/api/nodelist';
+		const requestOptions = {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' },
+		};
+
+		fetch(url, requestOptions)
+			.then(response => response.json())
+			.then(data => { console.log(data); return data; })
+			.then(data => setModes(data.nodes));
+	}, []);
+
 	return (
 		<Router>
 			<div>
 				<Nav />
 				<div className="container-fluid">
 					<div className="row">
-						<Sidebar />
+						<Sidebar modes={modes} />
 						<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-md-4">
 							<Switch>
-								<Route path="/node">
-									<NodeEditor />
-								</Route>
+								<Route path="/node/:name" component={NodeEditor} />
 								<Route path="/table">
 									<ModeTable />
 								</Route>

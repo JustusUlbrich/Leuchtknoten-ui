@@ -3,9 +3,12 @@ import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
 import { ControlGradient } from "./ControlGradient";
 import { ControlFloat } from "./ControlFloat";
 import { ControlRGB } from "./ControlRGB";
+import { ControlBool } from "./ControlBool";
 
 var numSocket = new Rete.Socket("Number");
 var rgbSocket = new Rete.Socket("RGB");
+var boolSocket = new Rete.Socket("Bool");
+
 
 export class ComponentInt extends Rete.Component
 {
@@ -27,6 +30,29 @@ export class ComponentInt extends Rete.Component
 	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
 	{
 		outputs["num"] = node.data.num;
+	}
+}
+
+export class ComponentBool extends Rete.Component
+{
+	constructor()
+	{
+		super("Bool");
+	}
+
+	async builder(node: Node)
+	{
+		var out1 = new Rete.Output("bool", "Bool", boolSocket);
+		var ctrl = new ControlBool(this.editor, "value", node);
+
+		node.addControl(ctrl).addOutput(out1);
+
+		return;
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		outputs["bool"] = node.data.num;
 	}
 }
 
@@ -118,9 +144,11 @@ export class ComponentMathAdv extends Rete.Component
 		var in2 = new Rete.Input("in2", "In2", numSocket);
 		var out1 = new Rete.Output("step", "Step", numSocket);
 		var out2 = new Rete.Output("mod", "Modulo", numSocket);
+		var out3 = new Rete.Output("pow", "Pow", numSocket);
+		var out4 = new Rete.Output("abs", "Abs (In1)", numSocket);
 
 		node.addInput(in1).addInput(in2)
-			.addOutput(out1).addOutput(out2);
+			.addOutput(out1).addOutput(out2).addOutput(out3).addOutput(out4);
 
 		return;
 	}
@@ -184,6 +212,32 @@ export class ComponentSetHSV extends Rete.Component
 	}
 }
 
+
+export class ComponentAnimNumber extends Rete.Component
+{
+	constructor()
+	{
+		super("AnimNumber");
+	}
+
+	async builder(node: Node)
+	{
+		var r = new Rete.Input("reset", "Reset", boolSocket);
+		var d = new Rete.Input("delay", "Delay (ms)", numSocket);
+		var out1 = new Rete.Output("out", "Output", numSocket);
+
+		node.addInput(r).addInput(d)
+			.addOutput(out1);
+
+		return;
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		//	outputs["out"] = node.data.Z;
+	}
+}
+
 export class ComponentLookup extends Rete.Component
 {
 	constructor()
@@ -195,7 +249,7 @@ export class ComponentLookup extends Rete.Component
 	{
 		var out1 = new Rete.Output("nodeId", "NodeId", numSocket);
 		var out2 = new Rete.Output("numLeds", "NumLeds", numSocket);
-		var out3 = new Rete.Output("elapsed", "Elapsed (s)", numSocket);
+		var out3 = new Rete.Output("elapsed", "Elapsed (ms)", numSocket);
 
 		node.addOutput(out1).addOutput(out2).addOutput(out3);
 
@@ -223,6 +277,37 @@ export class ComponentTrigo extends Rete.Component
 		var tan = new Rete.Output("tan", "Tan", numSocket);
 
 		node.addInput(input).addOutput(sin).addOutput(cos).addOutput(tan);
+
+		return;
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		// outputs["rgb"] = node.data.rgb;
+	}
+}
+
+export class ComponentMidi extends Rete.Component
+{
+	constructor()
+	{
+		super("Midi");
+	}
+
+	async builder(node: Node)
+	{
+		var noteMin = new Rete.Input("noteMin", "Min Note", numSocket);
+		var noteMax = new Rete.Input("noteMax", "Max Note", numSocket);
+		var noteOn = new Rete.Output("noteOn", "Note On", boolSocket)
+		// TODO: needed?
+		// var noteOff = new Rete.Output("noteOff", "Note Off", boolSocket);
+		var pitch = new Rete.Output("pitch", "Pitch", numSocket);
+		var velocity = new Rete.Output("velo", "Velocity", numSocket);
+
+		node.addInput(noteMin).addInput(noteMax)
+			.addOutput(noteOn)
+			// .addOutput(noteOff) NEEDED?
+			.addOutput(pitch).addOutput(velocity);
 
 		return;
 	}

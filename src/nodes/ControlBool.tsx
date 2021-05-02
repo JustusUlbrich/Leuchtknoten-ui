@@ -1,15 +1,15 @@
 import React from 'react';
 import Rete, { Node } from "rete";
 
-export class ControlFloatReact extends React.Component<any, { value: number }>
+export class ControlBoolReact extends React.Component<any, { value: boolean }>
 {
-	onChange: (value: number) => void;
+	onChange: (value: boolean) => void;
 
 	constructor(props: any)
 	{
 		super(props);
 
-		const init = props.value ?? 0;
+		const init = props.value ?? false;
 		this.state = { value: init };
 
 		this.handleChange = this.handleChange.bind(this);
@@ -18,7 +18,8 @@ export class ControlFloatReact extends React.Component<any, { value: number }>
 
 	handleChange(event: React.ChangeEvent<HTMLInputElement>)
 	{
-		const value = +event.target.value;
+		console.log(event);
+		const value = !!event.target.checked;
 		this.setState({ value: value });
 		this.onChange(value)
 	}
@@ -26,21 +27,26 @@ export class ControlFloatReact extends React.Component<any, { value: number }>
 	render()
 	{
 		return (
-			<input
-				className="form-control"
-				type="number"
-				step="0.01"
-				value={this.state.value} onChange={this.handleChange}
-				ref={ref =>
-				{
-					ref && ref.addEventListener("pointerdown", e => e.stopPropagation());
-				}}
-			/>
+			<div className="custom-control custom-switch"
+			>
+				<input
+					id="switch"
+					className="custom-control-input"
+					type="checkbox"
+					checked={this.state.value}
+					onChange={this.handleChange}
+					ref={ref =>
+					{
+						ref && ref.addEventListener("pointerdown", e => e.stopPropagation());
+					}}
+				/>
+				<label className="custom-control-label" htmlFor="switch">{this.state.value ? 'On' : 'Off'}</label>
+			</div>
 		)
 	}
 }
 
-export class ControlFloat extends Rete.Control
+export class ControlBool extends Rete.Control
 {
 	props: any;
 
@@ -49,7 +55,7 @@ export class ControlFloat extends Rete.Control
 		super(key);
 		(this.data as any).render = 'react';
 		//@ts-ignore
-		this.component = ControlFloatReact;
+		this.component = ControlBoolReact;
 
 		const onChange = (value: number) => 
 		{
