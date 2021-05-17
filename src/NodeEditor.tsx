@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Rete from "rete";
 import { NodeEditor as ReteNodeEditor } from "rete"
 import './NodeEditor.scss'
@@ -21,7 +21,17 @@ interface NodeUpdate
 	Data: any;
 }
 
-export class NodeEditor extends React.Component
+
+export function NodeEditor(props: any)
+{
+	console.log(props);
+
+	useEffect(() => { }, [props.match?.params?.name]);
+
+	return <NodeEditorComp key={props.match.params.name} {...props} />;
+}
+
+class NodeEditorComp extends React.Component
 {
 	containerRef: React.RefObject<HTMLDivElement>;
 	dockRef: React.RefObject<HTMLDivElement>;
@@ -40,6 +50,11 @@ export class NodeEditor extends React.Component
 
 		this.containerRef = React.createRef();
 		this.dockRef = React.createRef();
+	}
+
+	async componentDidUpdate()
+	{
+		this.componentDidMount();
 	}
 
 	async componentDidMount()
@@ -109,7 +124,7 @@ export class NodeEditor extends React.Component
 
 				if (this.saveTimeout)
 					clearTimeout(this.saveTimeout);
-				this.saveTimeout = setTimeout(() => this.save(), 500);
+				this.saveTimeout = setTimeout(() => this.updateAll(), 500);
 			}
 		);
 
@@ -148,7 +163,7 @@ export class NodeEditor extends React.Component
 
 	}
 
-	save()
+	updateAll()
 	{
 		console.log(this.editor.toJSON());
 
@@ -210,5 +225,3 @@ export class NodeEditor extends React.Component
 		)
 	}
 }
-
-export default NodeEditor;

@@ -1,40 +1,40 @@
 .App {
-  text-align: center;
+	text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+	height: 40vmin;
+	pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+	.App-logo {
+		animation: App-logo-spin infinite 20s linear;
+	}
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+	background-color: #282c34;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: white;
 }
 
 .App-link {
-  color: #61dafb;
+	color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 a svg {
@@ -43,7 +43,6 @@ a svg {
 	margin-right: 0.25em;
 	vertical-align: text-bottom;
 }
-
 
 /*
  * Main
@@ -57,93 +56,101 @@ main {
 /*
  * Sidebar
  */
+.nav-item {
+	display: flex;
+	justify-content: space-between;
 
- .sidebar {
+	a.d-flex.align-items-center.text-muted {
+		padding-right: 0.775rem;
+	}
+}
+
+.sidebar {
 	position: fixed;
 	top: 0;
 	bottom: 0;
 	left: 0;
 	z-index: 100; /* Behind the navbar */
 	padding: 48px 0 0; /* Height of navbar */
-	box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-  }
-  
-  @media (max-width: 767.98px) {
+	box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 767.98px) {
 	.sidebar {
-	  top: 5rem;
+		top: 5rem;
 	}
-  }
-  
-  .sidebar-sticky {
+}
+
+.sidebar-sticky {
 	position: relative;
 	top: 0;
 	height: calc(100vh - 48px);
-	padding-top: .5rem;
+	padding-top: 0.5rem;
 	overflow-x: hidden;
 	overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-  }
-  
-  @supports ((position: -webkit-sticky) or (position: sticky)) {
+}
+
+@supports ((position: -webkit-sticky) or (position: sticky)) {
 	.sidebar-sticky {
-	  position: -webkit-sticky;
-	  position: sticky;
+		position: -webkit-sticky;
+		position: sticky;
 	}
-  }
-  
-  .sidebar .nav-link {
+}
+
+.sidebar .nav-link {
 	font-weight: 500;
 	color: #333;
-  }
-  
-  .sidebar .nav-link .feather {
+}
+
+.sidebar .nav-link .feather {
 	margin-right: 4px;
 	color: #999;
-  }
-  
-  .sidebar .nav-link.active {
+}
+
+.sidebar .nav-link.active {
 	color: #007bff;
-  }
-  
-  .sidebar .nav-link:hover .feather,
-  .sidebar .nav-link.active .feather {
+}
+
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather {
 	color: inherit;
-  }
-  
-  .sidebar-heading {
-	font-size: .75rem;
+}
+
+.sidebar-heading {
+	font-size: 0.75rem;
 	text-transform: uppercase;
-  }
-  
-  /*
+}
+
+/*
    * Navbar
    */
-  
-  .navbar-brand {
-	padding-top: .75rem;
-	padding-bottom: .75rem;
+
+.navbar-brand {
+	padding-top: 0.75rem;
+	padding-bottom: 0.75rem;
 	font-size: 1rem;
-	background-color: rgba(0, 0, 0, .25);
-	box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
-  }
-  
-  .navbar .navbar-toggler {
-	top: .25rem;
+	background-color: rgba(0, 0, 0, 0.25);
+	box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
+}
+
+.navbar .navbar-toggler {
+	top: 0.25rem;
 	right: 1rem;
-  }
-  
-  .navbar .form-control {
-	padding: .75rem 1rem;
+}
+
+.navbar .form-control {
+	padding: 0.75rem 1rem;
 	border-width: 0;
 	border-radius: 0;
-  }
-  
-  .form-control-dark {
+}
+
+.form-control-dark {
 	color: #fff;
-	background-color: rgba(255, 255, 255, .1);
-	border-color: rgba(255, 255, 255, .1);
-  }
-  
-  .form-control-dark:focus {
+	background-color: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.1);
+}
+
+.form-control-dark:focus {
 	border-color: transparent;
-	box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
-  }
+	box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+}

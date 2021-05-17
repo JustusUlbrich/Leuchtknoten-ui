@@ -3,16 +3,16 @@ import React, { useEffect, useState } from 'react';
 import './App.scss';
 import ModeConfig from './ModeConfig';
 import ModeTable from './ModeTable';
-import { NodeEditor } from './NodeEditor';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route, Link, MemoryRouter } from 'react-router-dom';
 
-import { Home, Layers, PlusCircle, Settings } from 'react-feather';
+import { Home, Layers, PlusCircle, Settings, XSquare } from 'react-feather';
+import { NodeEditor } from './NodeEditor';
 
 function Nav()
 {
 	return (
 		<nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-			<a className="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="">Wall</a>
+			<Link className="navbar-brand col-md-3 col-lg-2 mr-0 px-3" to="/">Wall</Link>
 			<button className="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 				<span className="navbar-toggler-icon"></span>
 			</button>
@@ -28,12 +28,30 @@ function Nav()
 
 function PresetList(props: { modes: string[] })
 {
+	// TODO: Delete icons and delete request (backend already available)
+
+
+	const url = process.env.REACT_APP_BASE_URL + '/api/nodedelete';
+	const requestOptions = {
+		method: 'DELETE',
+		headers: { 'Content-Type': 'application/json' },
+	};
+
+	const delteNode = (name: string) =>
+	{
+		fetch(url + '?name=' + name, requestOptions)
+			.then(response => console.log(response));
+	}
+
 	return (
 		<ul className="nav flex-column mb-2">
 			{props.modes.map(m =>
 				<li key={m} className="nav-item">
-					<a className="nav-link" href={"/node/" + m}>
+					<Link className="nav-link" to={"/node/" + m}>
 						<Layers /> {m}
+					</Link>
+					<a onClick={() => delteNode(m)} className="d-flex align-items-center text-muted" aria-label="Delete network">
+						<XSquare />
 					</a>
 				</li>
 			)}
@@ -64,9 +82,9 @@ function Sidebar(props: { modes: string[] })
 
 				<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
 					<span>Current Modes</span>
-					<a className="d-flex align-items-center text-muted" href="/node/new" aria-label="Add a new preset">
+					<Link to="/node/new" className="d-flex align-items-center text-muted" aria-label="Add a new preset">
 						<PlusCircle />
-					</a>
+					</Link>
 				</h6>
 				<PresetList modes={props.modes} />
 			</div>
@@ -93,7 +111,7 @@ function App()
 	}, []);
 
 	return (
-		<Router>
+		<MemoryRouter initialEntries={["/node/new"]}>
 			<div>
 				<Nav />
 				<div className="container-fluid">
@@ -101,7 +119,7 @@ function App()
 						<Sidebar modes={modes} />
 						<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-md-4">
 							<Switch>
-								<Route path="/node/:name" component={NodeEditor} />
+								<Route exact path="/node/:name" component={NodeEditor} />
 								<Route path="/table">
 									<ModeTable />
 								</Route>
@@ -130,7 +148,7 @@ function App()
 					</div>
 				</div>
 			</div>
-		</Router>
+		</MemoryRouter>
 	);
 }
 

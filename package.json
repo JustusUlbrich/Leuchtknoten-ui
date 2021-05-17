@@ -14,7 +14,6 @@
 		"bootstrap": "^4.5.3",
 		"bootswatch": "^4.5.3",
 		"css-loader": "^5.0.1",
-		"dotenv": "^8.2.0",
 		"exports-loader": "^1.1.1",
 		"jquery": "^3.5.1",
 		"node-sass": "^4.0.0",
@@ -41,10 +40,10 @@
 	},
 	"scripts": {
 		"start": "react-scripts start",
-		"build": "react-scripts build && yarn run build-dist",
+		"build": "react-scripts build && yarn run bundle",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
-		"build-dist": "cd build && copy static\\js\\*.js main.js && copy static\\css\\*.css main.css"
+		"bundle": "npx gulp"
 	},
 	"eslintConfig": {
 		"extends": [
@@ -65,6 +64,10 @@
 		]
 	},
 	"devDependencies": {
-		"@types/react-router-dom": "^5.1.7"
+		"@types/react-router-dom": "^5.1.7",
+		"dotenv": "^8.6.0",
+		"gulp": "^4.0.2",
+		"gulp-inline-source": "^4.0.0",
+		"gulp-replace": "^1.1.3"
 	}
 }
