@@ -9,7 +9,7 @@ import DockPlugin from 'rete-dock-plugin';
 
 import { clearTimeout, setTimeout } from 'timers';
 
-import { ComponentMath, ComponentGradient, ComponentInt, ComponentLookup, ComponentOutput, ComponentRGB, ComponentTrigo, ComponentMix, ComponentMathAdv, ComponentSetHSV, ComponentBool, ComponentAnimNumber, ComponentMidi } from "./nodes/NodeComponents";
+import { ComponentMath, ComponentGradient, ComponentInt, ComponentLookup, ComponentOutput, ComponentRGB, ComponentTrigo, ComponentMix, ComponentMathAdv, ComponentSetHSV, ComponentBool, ComponentAnimNumber, ComponentMidi, ComponentNoise } from "./nodes/NodeComponents";
 import { Save } from "react-feather";
 import AreaPlugin from "rete-area-plugin";
 import KeyboardPlugin from 'rete-keyboard-plugin';
@@ -19,6 +19,7 @@ const NodeCategories = [
 	{ name: "output", nodes: ["Output"] },
 	{ name: "color", nodes: ["Mix", "RGB", "SetHSV", "Gradient"] },
 	{ name: "math", nodes: ["Number", "Trigo", "AnimNumber", "Math", "MathAdv"] },
+	{ name: "random", nodes: ["Noise"] },
 	{ name: "utility", nodes: ["Lookup"] },
 	{ name: "trigger", nodes: ["Midi", "Bool"] },
 ];
@@ -29,13 +30,13 @@ interface NodeUpdate
 	Data: any;
 }
 
-export function NodeEditor(props: any)
+export function NodeEditor(props: { location: Location })
 {
 	console.log(props);
 
-	useEffect(() => { }, [props.match?.params?.name]);
+	useEffect(() => { }, [props.location]);
 
-	return <NodeEditorComp key={props.match.params.name} {...props} />;
+	return <NodeEditorComp key={props.location.search} {...props} />;
 }
 
 export function EditorMenu(props: { editor: ReteNodeEditor })
@@ -79,13 +80,27 @@ class NodeEditorComp extends React.Component
 	saveTimeout?: NodeJS.Timeout;
 	updateTimeout?: NodeJS.Timeout;
 
-	constructor(props: any)
+	constructor(props: { location: Location })
 	{
 		super(props);
-		this.setState({ networkName: props.match?.params?.name ?? "" });
+
+		const name = this.getNetworkNameFromUrl(props.location.search);
+		this.state = { editor: undefined, networkName: name };
 
 		this.containerRef = React.createRef();
 		this.dockRef = React.createRef();
+	}
+
+	// componentwillreceiveprops(nextprops: { location: location })
+	// {
+	// 	const name = this.getnetworknamefromurl(nextprops.location.search);
+	// 	this.setstate({ networkname: name });
+	// }
+
+	getNetworkNameFromUrl(url: string): string
+	{
+		const matches = url.match(/name=([^&]*)/);
+		return matches?.[1] || "";
 	}
 
 	/* 	async componentDidUpdate()
@@ -110,6 +125,7 @@ class NodeEditorComp extends React.Component
 			new ComponentMath(),
 			new ComponentMathAdv(),
 			new ComponentTrigo(),
+			new ComponentNoise(),
 			new ComponentMix(),
 			new ComponentRGB(),
 			new ComponentSetHSV(),
@@ -186,18 +202,17 @@ class NodeEditorComp extends React.Component
 		editor.trigger("process");
 		// AreaPlugin.zoomAt(editor, editor.nodes);
 
-		{
-			const url = process.env.REACT_APP_BASE_URL + '/api/nodeload?name=' + this.state.networkName;
-			const requestOptions = {
-				method: 'GET',
-				headers: { 'Content-Type': 'application/json' },
-			};
+		const url = process.env.REACT_APP_BASE_URL + '/api/nodeload?name=' + this.state.networkName;
+		const requestOptions = {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' },
+		};
 
-			fetch(url, requestOptions)
-				.then(response => response.json())
-				.then(data => { console.log(data); return data; })
-				.then(data => editor.fromJSON(data));
-		}
+		fetch(url, requestOptions)
+			.then(response => response.json())
+			.then(data => { console.log(data); return data; })
+			.then(data => editor.fromJSON(data));
+
 
 		this.setState({ editor });
 	}
@@ -238,13 +253,14 @@ class NodeEditorComp extends React.Component
 
 		console.log(this.state.editor.toJSON());
 
-		this.setState({ networkName: window.prompt("Name", this.state.networkName)?.toLowerCase().replace(" ", "") ?? "" });
+		const name = window.prompt("Name", this.state.networkName)?.toLowerCase().replace(" ", "") ?? "";
+		this.setState({ networkName: name });
 
 		const url = process.env.REACT_APP_BASE_URL + '/api/nodestore';
 		const requestOptions = {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ name: this.state.networkName, network: this.state.editor.toJSON() })
+			body: JSON.stringify({ name, network: this.state.editor.toJSON() })
 		};
 		fetch(url, requestOptions)
 			.then(response => console.log(response));
@@ -257,12 +273,14 @@ class NodeEditorComp extends React.Component
 				<div className="node-menu">{this.state.editor ? <EditorMenu editor={this.state.editor} /> : ""}</div>
 				<div ref={this.containerRef}></div>
 				<div className="dock">
-					<div ref={this.dockRef}></div>
-					<div className="actions">
-						<button type="button" className="btn btn-sm btn-primary" onClick={() => this.store()}>
-							<Save />
+					<div className="dock-container">
+						<div className="dock-items" ref={this.dockRef}></div>
+						<div className="actions">
+							<button type="button" className="btn btn-sm btn-primary" onClick={() => this.store()}>
+								<Save />
 									Speichern
 						</button>
+						</div>
 					</div>
 				</div>
 

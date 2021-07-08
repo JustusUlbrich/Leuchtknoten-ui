@@ -1,0 +1,23 @@
+$col: #dadada;
+
+.settings-container {
+	padding: 1em;
+	color: $col;
+	min-height: 100%;
+
+	form {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.form-group {
+		min-width: 300px;
+		max-width: 400px;
+		margin-right: 1em;
+	}
+
+	h2 {
+		border-bottom: 1px solid $col;
+		width: 100%;
+	}
+}

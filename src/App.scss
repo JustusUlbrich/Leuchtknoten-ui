@@ -47,10 +47,29 @@ a svg {
 /*
  * Main
  */
+div#root {
+	height: 100vh;
+	/* overflow: hidden; */
+	display: flex;
+	flex-direction: column;
+
+	.container-fluid {
+		flex: 1 1 100%;
+
+		.row {
+			height: 100%;
+		}
+	}
+}
 
 main {
-	height: calc(100vh - 48px);
-	overflow-y: auto;
+	// height: calc(100vh - 48px);
+	overflow-y: hidden;
+	display: flex;
+	&.pl-md-4,
+	&.px-md-4 {
+		padding: 0 !important;
+	}
 }
 
 /*
@@ -84,7 +103,7 @@ main {
 .sidebar-sticky {
 	position: relative;
 	top: 0;
-	height: calc(100vh - 48px);
+	// height: calc(100vh - 48px);
 	padding-top: 0.5rem;
 	overflow-x: hidden;
 	overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
@@ -94,6 +113,7 @@ main {
 	.sidebar-sticky {
 		position: -webkit-sticky;
 		position: sticky;
+		top: 10vh;
 	}
 }
 

@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import './App.scss';
 import ModeConfig from './ModeConfig';
 import ModeTable from './ModeTable';
-import { Switch, Route, Link, MemoryRouter } from 'react-router-dom';
+import { Switch, Route, Link, BrowserRouter, NavLink } from 'react-router-dom';
 
-import { Home, Layers, PlusCircle, Settings, XSquare } from 'react-feather';
+import { Grid, Layers, PlusCircle, Settings, XSquare } from 'react-feather';
 import { NodeEditor } from './NodeEditor';
 
 function Nav()
@@ -28,9 +28,6 @@ function Nav()
 
 function PresetList(props: { modes: string[] })
 {
-	// TODO: Delete icons and delete request (backend already available)
-
-
 	const url = process.env.REACT_APP_BASE_URL + '/api/nodedelete';
 	const requestOptions = {
 		method: 'DELETE',
@@ -39,20 +36,23 @@ function PresetList(props: { modes: string[] })
 
 	const delteNode = (name: string) =>
 	{
-		fetch(url + '?name=' + name, requestOptions)
-			.then(response => console.log(response));
+		if (window.confirm("Delete " + name + " ?"))
+		{
+			fetch(url + '?name=' + name, requestOptions)
+				.then(response => console.log(response));
+		}
 	}
 
 	return (
 		<ul className="nav flex-column mb-2">
 			{props.modes.map(m =>
 				<li key={m} className="nav-item">
-					<Link className="nav-link" to={"/node/" + m}>
+					<Link className="nav-link" to={{ pathname: "/editor", search: "?name=" + m }}>
 						<Layers /> {m}
 					</Link>
-					<a onClick={() => delteNode(m)} className="d-flex align-items-center text-muted" aria-label="Delete network">
+					<button onClick={() => delteNode(m)} className="btn btn-link btn-sm d-flex align-items-center text-muted" aria-label="Delete network">
 						<XSquare />
-					</a>
+					</button>
 				</li>
 			)}
 		</ul>
@@ -66,23 +66,20 @@ function Sidebar(props: { modes: string[] })
 			<div className="sidebar-sticky pt-3">
 				<ul className="nav flex-column">
 					<li className="nav-item">
-						<a className="nav-link active" href="#">
-							<Home />
-							 Home
-							 <span className="sr-only">(current)</span>
-						</a>
+						<NavLink className="nav-link" to="/editor" activeClassName="active">
+							<Grid /> Editor
+						</NavLink>
 					</li>
 					<li className="nav-item">
-						<a className="nav-link" href="#">
-							<Settings />
-							Settings
-						</a>
+						<NavLink className="nav-link" to="/settings" activeClassName="active">
+							<Settings /> Settings
+						</NavLink>
 					</li>
 				</ul>
 
 				<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-					<span>Current Modes</span>
-					<Link to="/node/new" className="d-flex align-items-center text-muted" aria-label="Add a new preset">
+					<span>Stored Modes</span>
+					<Link to="/editor" className="d-flex align-items-center text-muted" aria-label="Add a new preset">
 						<PlusCircle />
 					</Link>
 				</h6>
@@ -111,24 +108,23 @@ function App()
 	}, []);
 
 	return (
-		<MemoryRouter initialEntries={["/node/new"]}>
-			<div>
-				<Nav />
-				<div className="container-fluid">
-					<div className="row">
-						<Sidebar modes={modes} />
-						<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-							<Switch>
-								<Route exact path="/node/:name" component={NodeEditor} />
-								<Route path="/table">
-									<ModeTable />
-								</Route>
-								<Route path="/config">
-									<ModeConfig />
-								</Route>
-							</Switch>
+		<BrowserRouter>
+			<Nav />
+			<div className="container-fluid">
+				<div className="row">
+					<Sidebar modes={modes} />
+					<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+						<Switch>
+							<Route exact path="/editor" component={NodeEditor} />
+							<Route path="/table">
+								<ModeTable />
+							</Route>
+							<Route path="/settings">
+								<ModeConfig />
+							</Route>
+						</Switch>
 
-							{/*
+						{/*
 							<div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 								<h1 className="h2">Dashboard</h1>
 								<div className="btn-toolbar mb-2 mb-md-0">
@@ -144,11 +140,10 @@ function App()
 							</div>
 							*/}
 
-						</main>
-					</div>
+					</main>
 				</div>
 			</div>
-		</MemoryRouter>
+		</BrowserRouter>
 	);
 }
 

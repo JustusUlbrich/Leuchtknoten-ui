@@ -8,6 +8,7 @@ import { ControlBool } from "./ControlBool";
 var numSocket = new Rete.Socket("Number");
 var rgbSocket = new Rete.Socket("RGB");
 var boolSocket = new Rete.Socket("Bool");
+var arraySocket = new Rete.Socket("Array");
 
 
 export class ComponentInt extends Rete.Component
@@ -250,8 +251,12 @@ export class ComponentLookup extends Rete.Component
 		var out1 = new Rete.Output("nodeId", "NodeId", numSocket);
 		var out2 = new Rete.Output("numLeds", "NumLeds", numSocket);
 		var out3 = new Rete.Output("elapsed", "Elapsed (ms)", numSocket);
+		var outX = new Rete.Output("posX", "Position X", numSocket);
+		var outY = new Rete.Output("posY", "Position Y", numSocket);
+		var outZ = new Rete.Output("posZ", "Position Z", numSocket);
 
-		node.addOutput(out1).addOutput(out2).addOutput(out3);
+		node.addOutput(out1).addOutput(out2).addOutput(out3)
+			.addOutput(outX).addOutput(outY).addOutput(outZ);
 
 		return;
 	}
@@ -318,6 +323,58 @@ export class ComponentMidi extends Rete.Component
 	}
 }
 
+export class ComponentNoise extends Rete.Component
+{
+	constructor()
+	{
+		super("Noise");
+	}
+
+	async builder(node: Node)
+	{
+		var xin = new Rete.Input("inX", "X (1D)", numSocket);
+		var yin = new Rete.Input("inY", "Y (2D)", numSocket);
+		var zin = new Rete.Input("inZ", "Z (3D)", numSocket)
+		var out1d = new Rete.Output("dim1", "1D Noise", numSocket)
+		var out2d = new Rete.Output("dim2", "2D Noise", numSocket)
+		var out3d = new Rete.Output("dim3", "3D Noise", numSocket)
+
+		node.addInput(xin).addInput(yin).addInput(zin)
+			.addOutput(out1d).addOutput(out2d).addOutput(out3d);
+
+		return;
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		// outputs["rgb"] = node.data.rgb;
+	}
+}
+
+export class ArrayLoop extends Rete.Component
+{
+	constructor()
+	{
+		super("ArrayLoop");
+	}
+
+	async builder(node: Node)
+	{
+		var in1 = new Rete.Input("rgb", "RGB", rgbSocket);
+		var in2 = new Rete.Input("white", "W", numSocket);
+
+		node.addInput(in1).addInput(in2);
+
+		return;
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		// outputs["rgb"] = inputs["rgb"];
+	}
+}
+
+
 export class ComponentOutput extends Rete.Component
 {
 	constructor()
@@ -328,8 +385,9 @@ export class ComponentOutput extends Rete.Component
 	async builder(node: Node)
 	{
 		var in1 = new Rete.Input("rgb", "RGB", rgbSocket);
+		var in2 = new Rete.Input("white", "W", numSocket);
 
-		node.addInput(in1);
+		node.addInput(in1).addInput(in2);
 
 		return;
 	}

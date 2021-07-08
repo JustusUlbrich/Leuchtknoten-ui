@@ -19,6 +19,7 @@ $node-color: #9b59b6;
 $node-math: #3498db;
 $node-utility: #e67e22;
 $node-trigger: #1abc9c;
+$node-random: #3498db;
 
 $node-colors: (
 	"output": $node-output,
@@ -26,6 +27,7 @@ $node-colors: (
 	"math": $node-math,
 	"utility": $node-utility,
 	"trigger": $node-trigger,
+	"random": $node-random,
 );
 
 @each $name, $color in $node-colors {
@@ -52,6 +54,9 @@ $node-colors: (
 	.node-menu {
 		position: absolute;
 		z-index: 100;
+		background-color: #272727;
+		width: 100%;
+		padding: 0.25em 1em;
 	}
 
 	.context-menu {
@@ -143,7 +148,8 @@ $node-colors: (
 		&.trigo,
 		&.math,
 		&.animnumber,
-		&.mathadv {
+		&.mathadv,
+		&.noise {
 			.title {
 				background-color: $node-math;
 			}
@@ -181,19 +187,31 @@ $node-colors: (
 
 .dock {
 	&:hover {
-		flex: 0 0 200px;
+		bottom: 0em;
 	}
 
-	transition: flex 0.2s ease-out;
-	overflow-x: auto;
-	overflow-y: hidden;
+	position: absolute;
+	bottom: -9em;
+	transition: bottom 0.2s ease-out;
 	white-space: nowrap;
-	flex: 0 0 100px;
 	border-top: 1px solid #d3d3d3;
-	padding-top: 1em;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
+	max-width: 100%;
+
+	.dock-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		max-width: 100%;
+		margin: 0.25em;
+		height: 12em;
+		background: #353535;
+
+		.dock-items {
+			flex: 1 1 auto;
+			overflow: scroll hidden;
+			margin-right: 1em;
+		}
+	}
 
 	.dock-item {
 		display: inline-block;
