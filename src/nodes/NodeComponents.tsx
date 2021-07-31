@@ -2,14 +2,15 @@ import Rete, { Node } from "rete";
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
 import { ControlGradient } from "./ControlGradient";
 import { ControlFloat } from "./ControlFloat";
+import { ControlInt } from "./ControlInt";
 import { ControlRGB } from "./ControlRGB";
 import { ControlBool } from "./ControlBool";
+import { ControlArray } from "./ControlArray";
 
 var numSocket = new Rete.Socket("Number");
 var rgbSocket = new Rete.Socket("RGB");
 var boolSocket = new Rete.Socket("Bool");
 var arraySocket = new Rete.Socket("Array");
-
 
 export class ComponentInt extends Rete.Component
 {
@@ -183,6 +184,70 @@ export class ComponentMix extends Rete.Component
 	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
 	{
 		//	outputs["out"] = node.data.Z;
+	}
+}
+
+export class ComponentArray extends Rete.Component
+{
+	constructor()
+	{
+		super("Array");
+	}
+
+	async builder(node: Node)
+	{
+		node.addInput(new Rete.Input("index", "Index", numSocket));
+		node.addControl(new ControlArray(this.editor, "entries", node));
+		node.addOutput(new Rete.Output("value", "Value", numSocket));
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		// outputs["num"] = node.data.num;
+	}
+}
+
+export class ComponentSwitch extends Rete.Component
+{
+	constructor()
+	{
+		super("Switch");
+	}
+
+	async builder(node: Node)
+	{
+
+		const onChange = (i: number) =>
+		{
+			node.inputs.forEach((input, _) =>
+			{
+				input.connections.forEach(c => this.editor?.removeConnection(c));
+				node.removeInput(input)
+			});
+
+			for (let n = 0; n < i; n++)
+			{
+				node.addInput(new Rete.Input("c" + n, "Color" + n, rgbSocket));
+			}
+			node.addInput(new Rete.Input("scale", "Scale", numSocket));
+			node.update();
+		}
+
+		onChange(node.getConnections.length);
+
+		// node.addInput(new Rete.Input("c1", "Color1", rgbSocket));
+		// node.addInput(new Rete.Input("c2", "Color2", rgbSocket));
+		// node.addInput(new Rete.Input("scale", "Scale", numSocket));
+
+		node.addOutput(new Rete.Output("rgb", "RGB", rgbSocket));
+		node.addControl(new ControlInt(this.editor, "count", node, onChange));
+
+		return;
+	}
+
+	worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs)
+	{
+		// outputs["num"] = node.data.num;
 	}
 }
 

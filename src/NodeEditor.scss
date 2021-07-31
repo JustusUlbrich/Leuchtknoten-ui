@@ -28,6 +28,7 @@ $node-colors: (
 	"utility": $node-utility,
 	"trigger": $node-trigger,
 	"random": $node-random,
+	"share": grey,
 );
 
 @each $name, $color in $node-colors {
@@ -47,6 +48,7 @@ $node-colors: (
 .node-editor {
 	min-height: 400px;
 	height: 100%;
+	width: 100%;
 
 	display: flex;
 	flex-direction: column;
@@ -182,6 +184,12 @@ $node-colors: (
 				background-color: #1abc9c;
 			}
 		}
+	}
+
+	.btn.import-btn {
+		border-radius: 1px;
+		margin-right: 1em;
+		min-width: 6em;
 	}
 }
 

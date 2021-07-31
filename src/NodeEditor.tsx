@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Rete from "rete";
 import { NodeEditor as ReteNodeEditor } from "rete"
 import './NodeEditor.scss'
@@ -9,11 +9,12 @@ import DockPlugin from 'rete-dock-plugin';
 
 import { clearTimeout, setTimeout } from 'timers';
 
-import { ComponentMath, ComponentGradient, ComponentInt, ComponentLookup, ComponentOutput, ComponentRGB, ComponentTrigo, ComponentMix, ComponentMathAdv, ComponentSetHSV, ComponentBool, ComponentAnimNumber, ComponentMidi, ComponentNoise } from "./nodes/NodeComponents";
+import { ComponentMath, ComponentGradient, ComponentInt, ComponentLookup, ComponentOutput, ComponentRGB, ComponentTrigo, ComponentMix, ComponentMathAdv, ComponentSetHSV, ComponentBool, ComponentAnimNumber, ComponentMidi, ComponentNoise, ComponentSwitch, ComponentArray } from "./nodes/NodeComponents";
 import { Save } from "react-feather";
 import AreaPlugin from "rete-area-plugin";
 import KeyboardPlugin from 'rete-keyboard-plugin';
 import ContextMenuPlugin from 'rete-context-menu-plugin';
+import { useLocation } from "react-router-dom";
 
 const NodeCategories = [
 	{ name: "output", nodes: ["Output"] },
@@ -30,16 +31,24 @@ interface NodeUpdate
 	Data: any;
 }
 
-export function NodeEditor(props: { location: Location })
+export interface EditorProps
 {
-	console.log(props);
-
-	useEffect(() => { }, [props.location]);
-
-	return <NodeEditorComp key={props.location.search} {...props} />;
+	search?: string;
 }
 
-export function EditorMenu(props: { editor: ReteNodeEditor })
+export function NodeEditor(props: EditorProps)
+{
+	let location = useLocation();
+	// useEffect(() => { }, [props.location]);
+	console.log(location);
+
+	return <NodeEditorComp
+		key={location?.search || ""}
+		search={location.search}
+	/>;
+}
+
+export function EditorMenu(props: { editor: ReteNodeEditor, handleImport: () => void, handleExport: () => void })
 {
 	const onNodeClick = (node: string) => props.editor.getComponent(node)?.createNode().then(n =>
 	{
@@ -60,17 +69,32 @@ export function EditorMenu(props: { editor: ReteNodeEditor })
 		</div>
 	);
 
+	const ShareSubmenu = () =>
+	(
+		<div className={"dropdown share"}>
+			<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Share
+			</button>
+			<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				<button onClick={props.handleImport} className="dropdown-item btn btn-secondary">Import</button>
+				<button onClick={props.handleExport} className="dropdown-item btn btn-secondary">Export</button>
+			</div>
+		</div>
+	);
+
 	return (
 		<div style={{ display: "flex" }}>
+			<ShareSubmenu />
 			{NodeCategories.map(nc => NodeSubmenu(nc.name, nc.nodes))}
 		</div>
 	);
 }
 
-class NodeEditorComp extends React.Component
+class NodeEditorComp extends React.Component<EditorProps>
 {
 	containerRef: React.RefObject<HTMLDivElement>;
 	dockRef: React.RefObject<HTMLDivElement>;
+	hiddenImportInput: React.RefObject<HTMLInputElement>;
 
 	state: { editor?: ReteNodeEditor, networkName: string } = {
 		editor: undefined,
@@ -80,33 +104,25 @@ class NodeEditorComp extends React.Component
 	saveTimeout?: NodeJS.Timeout;
 	updateTimeout?: NodeJS.Timeout;
 
-	constructor(props: { location: Location })
+	constructor(props: EditorProps)
 	{
 		super(props);
 
-		const name = this.getNetworkNameFromUrl(props.location.search);
+		const name = this.getNetworkNameFromUrl(props.search || "");
 		this.state = { editor: undefined, networkName: name };
+
+		console.log("Name: " + this.state.networkName);
 
 		this.containerRef = React.createRef();
 		this.dockRef = React.createRef();
+		this.hiddenImportInput = React.createRef();
 	}
-
-	// componentwillreceiveprops(nextprops: { location: location })
-	// {
-	// 	const name = this.getnetworknamefromurl(nextprops.location.search);
-	// 	this.setstate({ networkname: name });
-	// }
 
 	getNetworkNameFromUrl(url: string): string
 	{
 		const matches = url.match(/name=([^&]*)/);
 		return matches?.[1] || "";
 	}
-
-	/* 	async componentDidUpdate()
-		{
-			// this.componentDidMount();
-		} */
 
 	async componentDidMount()
 	{
@@ -130,6 +146,8 @@ class NodeEditorComp extends React.Component
 			new ComponentRGB(),
 			new ComponentSetHSV(),
 			new ComponentGradient(),
+			new ComponentSwitch(),
+			new ComponentArray(),
 		];
 
 		const editor = new Rete.NodeEditor("Wall@0.1.0", this.containerRef.current);
@@ -246,10 +264,10 @@ class NodeEditorComp extends React.Component
 			.then(response => console.log(response));
 	}
 
-	store()
+	store(): Promise<void>
 	{
 		if (!this.state.editor)
-			return;
+			return Promise.resolve();
 
 		console.log(this.state.editor.toJSON());
 
@@ -262,15 +280,55 @@ class NodeEditorComp extends React.Component
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ name, network: this.state.editor.toJSON() })
 		};
-		fetch(url, requestOptions)
+
+		return fetch(url, requestOptions)
 			.then(response => console.log(response));
+	}
+
+	handleImport()
+	{
+		console.log("import");
+		this.hiddenImportInput?.current?.click();
+	}
+
+	async handleImportFileChange(event: React.ChangeEvent<HTMLInputElement>)
+	{
+		if (event.target?.files)
+		{
+			const fileUploaded = event.target?.files[0]
+
+			if (fileUploaded)
+			{
+				const t = await fileUploaded.text();
+				this.state.editor?.fromJSON(JSON.parse(t));
+			}
+		}
+	}
+
+	async handleExport()
+	{
+		const blob = new Blob([JSON.stringify(this.state.editor?.toJSON())], { type: 'application/json' });
+		const href = await URL.createObjectURL(blob);
+		const link = document.createElement('a');
+		link.href = href;
+		link.download = this.state.networkName + ".json";
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
 	}
 
 	render()
 	{
 		return (
 			<div className="node-editor">
-				<div className="node-menu">{this.state.editor ? <EditorMenu editor={this.state.editor} /> : ""}</div>
+				<input type="file" ref={this.hiddenImportInput} onChange={event => this.handleImportFileChange(event)} style={{ display: 'none' }} />
+				<div className="node-menu">{this.state.editor ?
+					<EditorMenu
+						editor={this.state.editor}
+						handleImport={() => this.handleImport()}
+						handleExport={() => this.handleExport()}
+					/> : ""}
+				</div>
 				<div ref={this.containerRef}></div>
 				<div className="dock">
 					<div className="dock-container">

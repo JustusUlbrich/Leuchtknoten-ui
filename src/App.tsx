@@ -61,6 +61,8 @@ function PresetList(props: { modes: string[] })
 
 function Sidebar(props: { modes: string[] })
 {
+	const storeMode = () => { };
+
 	return (
 		<nav id="sidebarMenu" className="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
 			<div className="sidebar-sticky pt-3">
@@ -78,10 +80,12 @@ function Sidebar(props: { modes: string[] })
 				</ul>
 
 				<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-					<span>Stored Modes</span>
-					<Link to="/editor" className="d-flex align-items-center text-muted" aria-label="Add a new preset">
-						<PlusCircle />
-					</Link>
+					<span>Stored Patterns</span>
+					<div className="d-flex align-items-center h5">
+						<Link to="/editor" className="d-flex align-items-center text-muted" aria-label="Add a new pattern">
+							<PlusCircle />
+						</Link>
+					</div>
 				</h6>
 				<PresetList modes={props.modes} />
 			</div>
@@ -115,7 +119,9 @@ function App()
 					<Sidebar modes={modes} />
 					<main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-md-4">
 						<Switch>
-							<Route exact path="/editor" component={NodeEditor} />
+							<Route exact path="/editor" >
+								<NodeEditor />
+							</Route>
 							<Route path="/table">
 								<ModeTable />
 							</Route>
