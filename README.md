@@ -2,7 +2,7 @@
 
 React Frontend of [Leuchtknoten](https://github.com/JustusUlbrich/Leuchtknoten).
 
-![Node Editor Preview](./docs/preview-small.mp4)
+https://user-images.githubusercontent.com/4276249/129334549-22319c9c-dbb7-4a9b-87b7-c8f5d5e5437d.mp4
 
 It features an interactive node editor, which is used to create patterns for the LED controller running on the esp32.
 
