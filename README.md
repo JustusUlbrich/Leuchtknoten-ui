@@ -1,46 +1,39 @@
-# Getting Started with Create React App
+# Leuchtknoten-ui
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React Frontend of [Leuchtknoten](https://github.com/JustusUlbrich/Leuchtknoten).
 
-## Available Scripts
+![Node Editor Preview](./docs/preview-small.mp4)
 
-In the project directory, you can run:
+It features an interactive node editor, which is used to create patterns for the LED controller running on the esp32.
 
-### `yarn start`
+The goal was to make the frontend small enough to fit on the esp32 flash, so it can be served directly from there.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Usage
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+**Please note that currently the url / IP address of the led controller is hard coded as `REACT_APP_BASE_URL` in `/.env`. Before using the frontend you have to adjust this according to local setup.**
 
-### `yarn test`
+After running the frontend locally or accessing the frontend from the LED controller you can:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![Main UI](./docs/mainUI.png)
 
-### `yarn build`
+1. Create a new pattern
+2. Open/edit existing pattern
+3. Change led controller settings
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Edit
+![Edit](./docs/edit.png)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Settings
+![Settings](./docs/settings.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Development
 
-### `yarn eject`
+Use `yarn install` to install all dependencies and `yarn start` to run the frontend locally.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+After making changes you need to run `yarn build`. It will merge all styles and javascript into a single static `.html` so it can't easily be served from the esp. Just copy `/public/index.html` to your data folder of [Leuchtknoten](https://github.com/JustusUlbrich/Leuchtknoten) and rebuild / reupload the file system.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## License
+[MIT](./LICENSE)
