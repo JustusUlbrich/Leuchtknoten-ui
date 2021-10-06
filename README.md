@@ -10,7 +10,7 @@ The goal was to make the frontend small enough to fit on the esp32 flash, so it 
 
 ## Usage
 
-**Please note that currently the url / IP address of the led controller is hard coded as `REACT_APP_BASE_URL` in `/.env`. Before using the frontend you have to adjust this according to local setup.**
+**Please note that currently the hostname of the led controller is hard coded as `REACT_APP_BASE_URL` in `/.env`. When you change the hostname of the controller you have to adjust this here as well.**
 
 After running the frontend locally or accessing the frontend from the LED controller you can:
 
